@@ -4,6 +4,7 @@ export * as dcop from './dcop.js';
 export * as feh from './feh.js';
 export * as gconftool2 from './gconftool-2.js';
 export * as gnome from './gnome.js';
+export * as gnomedark from './gnome-dark.js';
 export * as mate from './mate.js';
 export * as nitrogen from './nitrogen.js';
 export * as pcmanfm from './pcmanfm.js';
