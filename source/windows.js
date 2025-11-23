@@ -18,7 +18,7 @@ export async function getWallpaper() {
 	return stdout.trim();
 }
 
-export async function setWallpaper(imagePath, {scale = 'fill'} = {}) {
+export async function setWallpaper(imagePath, {scale = 'fill', screen = 'main'} = {}) {
 	if (typeof imagePath !== 'string') {
 		throw new TypeError('Expected a string');
 	}
@@ -30,5 +30,27 @@ export async function setWallpaper(imagePath, {scale = 'fill'} = {}) {
 		scale,
 	];
 
-	await execFile(binary, arguments_);
+	if (screen === 'all') {
+		let screen = 0;
+		while (true) { // eslint-disable-line no-constant-condition
+			try {
+				await execFile(binary, [...arguments_, // eslint-disable-line no-await-in-loop
+					'--screen',
+					`${screen}`]);
+				screen++;
+			} catch (error) {
+				if (error.stderr.startsWith('The available monitors are from')) {
+					break;
+				} else {
+					throw error;
+				}
+			}
+		}
+	} else if (Number.parseInt(screen, 10) >= 0) {
+		await execFile(binary, [...arguments_,
+			'--screen',
+			`${screen}`]);
+	} else {
+		await execFile(binary, arguments_);
+	}
 }
