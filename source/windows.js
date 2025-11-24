@@ -35,11 +35,11 @@ export async function setWallpaper(imagePath, {scale = 'fill', screen = 'main'} 
 		while (true) { // eslint-disable-line no-constant-condition
 			try {
 				await execFile(binary, [...arguments_, // eslint-disable-line no-await-in-loop
-					'--screen',
+					'--monitor',
 					`${screen}`]);
 				screen++;
 			} catch (error) {
-				if (error.stderr.startsWith('The available monitors are from')) {
+				if (error.stderr === `Error: "The available monitors are from 0 - ${screen-1} but ${screen} was given"\n`) {
 					break;
 				} else {
 					throw error;
@@ -48,7 +48,7 @@ export async function setWallpaper(imagePath, {scale = 'fill', screen = 'main'} 
 		}
 	} else if (Number.parseInt(screen, 10) >= 0) {
 		await execFile(binary, [...arguments_,
-			'--screen',
+			'--monitor',
 			`${screen}`]);
 	} else {
 		await execFile(binary, arguments_);
